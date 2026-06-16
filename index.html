@@ -8,9 +8,11 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
         <link rel="stylesheet" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/leaflet.photon.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -27,6 +29,8 @@
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
         <script src="js/leaflet.pattern.js"></script>
         <script src="js/leaflet-hash.js"></script>
@@ -35,11 +39,16 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet.photon.js"></script>
-        <script src="data/KepadatanPendudukKotaYogyakarta_1.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/gabriel_centroids_0.js"></script>
+        <script src="data/KepadatanPendudukKotaYogyakarta_2.js"></script>
+        <script src="data/polygon_to_line_3.js"></script>
+        <script src="data/Polygon_line_4.js"></script>
+        <script src="data/Exploded_5.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[-7.840166674551163,110.32537031655427],[-7.762882012551167,110.43361540037957]]);
+        }).fitBounds([[-7.841759797760737,110.32117290974183],[-7.764475135760726,110.43500483660328]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -132,13 +141,165 @@
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
-        map.createPane('pane_OSMStandard_0');
-        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
-        var layer_OSMStandard_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            pane: 'pane_OSMStandard_0',
+        function pop_gabriel_centroids_0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(String(feature.properties['TIPADM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(String(feature.properties['WADMKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(String(feature.properties['WADMPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(String(feature.properties['LUAS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Field'] !== null ? autolinker.link(String(feature.properties['Field']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_No'] !== null ? autolinker.link(String(feature.properties['Join_No']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Pendu'] !== null ? autolinker.link(String(feature.properties['Join_Pendu']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kepad'] !== null ? autolinker.link(String(feature.properties['Join_Kepad']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Banji'] !== null ? autolinker.link(String(feature.properties['Join_Banji']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Cuaca'] !== null ? autolinker.link(String(feature.properties['Join_Cuaca']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Erups'] !== null ? autolinker.link(String(feature.properties['Join_Erups']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gelom'] !== null ? autolinker.link(String(feature.properties['Join_Gelom']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gel_1'] !== null ? autolinker.link(String(feature.properties['Join_Gel_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gempa'] !== null ? autolinker.link(String(feature.properties['Join_Gempa']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kebak'] !== null ? autolinker.link(String(feature.properties['Join_Kebak']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Keker'] !== null ? autolinker.link(String(feature.properties['Join_Keker']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Tanah'] !== null ? autolinker.link(String(feature.properties['Join_Tanah']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_gabriel_centroids_0_0() {
+            return {
+                pane: 'pane_gabriel_centroids_0',
+                radius: 6.8,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,30,42,1.0)',
+                interactive: true,
+            }
+        }
+        function style_gabriel_centroids_0_1() {
+            return {
+                pane: 'pane_gabriel_centroids_0',
+                radius: 4.0,
+                stroke: false,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,0,0,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_gabriel_centroids_0');
+        map.getPane('pane_gabriel_centroids_0').style.zIndex = 400;
+        map.getPane('pane_gabriel_centroids_0').style['mix-blend-mode'] = 'normal';
+        var layer_gabriel_centroids_0 = new L.geoJson.multiStyle(json_gabriel_centroids_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_gabriel_centroids_0',
+            layerName: 'layer_gabriel_centroids_0',
+            pane: 'pane_gabriel_centroids_0',
+            onEachFeature: pop_gabriel_centroids_0,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_gabriel_centroids_0_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_gabriel_centroids_0_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_gabriel_centroids_0);
+        map.addLayer(layer_gabriel_centroids_0);
+        map.createPane('pane_OSMStandard_1');
+        map.getPane('pane_OSMStandard_1').style.zIndex = 401;
+        var layer_OSMStandard_1 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_1',
             opacity: 1.0,
             attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
             minZoom: 1,
@@ -146,17 +307,16 @@
             minNativeZoom: 0,
             maxNativeZoom: 19
         });
-        layer_OSMStandard_0;
-        map.addLayer(layer_OSMStandard_0);
-        function pop_KepadatanPendudukKotaYogyakarta_1(feature, layer) {
+        layer_OSMStandard_1;
+        map.addLayer(layer_OSMStandard_1);
+        function pop_KepadatanPendudukKotaYogyakarta_2(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
                         <th scope="row">Kecamatan </th>\
                         <td>' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Luas Wilayah (ha)</th>\
-                        <td>' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <th scope="row">Jumlah Penduduk (ribu)</th>\
@@ -174,10 +334,10 @@
 			layer.bindPopup(content, { maxHeight: 400 });
         }
 
-        function style_KepadatanPendudukKotaYogyakarta_1_0(feature) {
+        function style_KepadatanPendudukKotaYogyakarta_2_0(feature) {
             if (feature.properties['Join_Kepad'] >= 8.225035 && feature.properties['Join_Kepad'] <= 12.025243 ) {
                 return {
-                pane: 'pane_KepadatanPendudukKotaYogyakarta_1',
+                pane: 'pane_KepadatanPendudukKotaYogyakarta_2',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -192,7 +352,7 @@
             }
             if (feature.properties['Join_Kepad'] >= 12.025243 && feature.properties['Join_Kepad'] <= 13.908058 ) {
                 return {
-                pane: 'pane_KepadatanPendudukKotaYogyakarta_1',
+                pane: 'pane_KepadatanPendudukKotaYogyakarta_2',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -207,7 +367,7 @@
             }
             if (feature.properties['Join_Kepad'] >= 13.908058 && feature.properties['Join_Kepad'] <= 18.358120 ) {
                 return {
-                pane: 'pane_KepadatanPendudukKotaYogyakarta_1',
+                pane: 'pane_KepadatanPendudukKotaYogyakarta_2',
                 opacity: 1,
                 color: 'rgba(35,35,35,1.0)',
                 dashArray: '',
@@ -221,23 +381,425 @@
             }
             }
         }
-        map.createPane('pane_KepadatanPendudukKotaYogyakarta_1');
-        map.getPane('pane_KepadatanPendudukKotaYogyakarta_1').style.zIndex = 401;
-        map.getPane('pane_KepadatanPendudukKotaYogyakarta_1').style['mix-blend-mode'] = 'normal';
-        var layer_KepadatanPendudukKotaYogyakarta_1 = new L.geoJson(json_KepadatanPendudukKotaYogyakarta_1, {
+        map.createPane('pane_KepadatanPendudukKotaYogyakarta_2');
+        map.getPane('pane_KepadatanPendudukKotaYogyakarta_2').style.zIndex = 402;
+        map.getPane('pane_KepadatanPendudukKotaYogyakarta_2').style['mix-blend-mode'] = 'normal';
+        var layer_KepadatanPendudukKotaYogyakarta_2 = new L.geoJson(json_KepadatanPendudukKotaYogyakarta_2, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_KepadatanPendudukKotaYogyakarta_1',
-            layerName: 'layer_KepadatanPendudukKotaYogyakarta_1',
-            pane: 'pane_KepadatanPendudukKotaYogyakarta_1',
-            onEachFeature: pop_KepadatanPendudukKotaYogyakarta_1,
-            style: style_KepadatanPendudukKotaYogyakarta_1_0,
+            dataVar: 'json_KepadatanPendudukKotaYogyakarta_2',
+            layerName: 'layer_KepadatanPendudukKotaYogyakarta_2',
+            pane: 'pane_KepadatanPendudukKotaYogyakarta_2',
+            onEachFeature: pop_KepadatanPendudukKotaYogyakarta_2,
+            style: style_KepadatanPendudukKotaYogyakarta_2_0,
         });
-        bounds_group.addLayer(layer_KepadatanPendudukKotaYogyakarta_1);
-        map.addLayer(layer_KepadatanPendudukKotaYogyakarta_1);
+        bounds_group.addLayer(layer_KepadatanPendudukKotaYogyakarta_2);
+        map.addLayer(layer_KepadatanPendudukKotaYogyakarta_2);
+        function pop_polygon_to_line_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(String(feature.properties['TIPADM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(String(feature.properties['WADMKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(String(feature.properties['WADMPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(String(feature.properties['LUAS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Field'] !== null ? autolinker.link(String(feature.properties['Field']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_No'] !== null ? autolinker.link(String(feature.properties['Join_No']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Pendu'] !== null ? autolinker.link(String(feature.properties['Join_Pendu']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kepad'] !== null ? autolinker.link(String(feature.properties['Join_Kepad']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Banji'] !== null ? autolinker.link(String(feature.properties['Join_Banji']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Cuaca'] !== null ? autolinker.link(String(feature.properties['Join_Cuaca']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Erups'] !== null ? autolinker.link(String(feature.properties['Join_Erups']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gelom'] !== null ? autolinker.link(String(feature.properties['Join_Gelom']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gel_1'] !== null ? autolinker.link(String(feature.properties['Join_Gel_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gempa'] !== null ? autolinker.link(String(feature.properties['Join_Gempa']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kebak'] !== null ? autolinker.link(String(feature.properties['Join_Kebak']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Keker'] !== null ? autolinker.link(String(feature.properties['Join_Keker']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Tanah'] !== null ? autolinker.link(String(feature.properties['Join_Tanah']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_polygon_to_line_3_0() {
+            return {
+                pane: 'pane_polygon_to_line_3',
+                opacity: 1,
+                color: 'rgba(114,155,111,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_polygon_to_line_3');
+        map.getPane('pane_polygon_to_line_3').style.zIndex = 403;
+        map.getPane('pane_polygon_to_line_3').style['mix-blend-mode'] = 'normal';
+        var layer_polygon_to_line_3 = new L.geoJson(json_polygon_to_line_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_polygon_to_line_3',
+            layerName: 'layer_polygon_to_line_3',
+            pane: 'pane_polygon_to_line_3',
+            onEachFeature: pop_polygon_to_line_3,
+            style: style_polygon_to_line_3_0,
+        });
+        bounds_group.addLayer(layer_polygon_to_line_3);
+        map.addLayer(layer_polygon_to_line_3);
+        function pop_Polygon_line_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(String(feature.properties['TIPADM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(String(feature.properties['WADMKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(String(feature.properties['WADMPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(String(feature.properties['LUAS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Field'] !== null ? autolinker.link(String(feature.properties['Field']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_No'] !== null ? autolinker.link(String(feature.properties['Join_No']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Pendu'] !== null ? autolinker.link(String(feature.properties['Join_Pendu']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kepad'] !== null ? autolinker.link(String(feature.properties['Join_Kepad']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Banji'] !== null ? autolinker.link(String(feature.properties['Join_Banji']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Cuaca'] !== null ? autolinker.link(String(feature.properties['Join_Cuaca']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Erups'] !== null ? autolinker.link(String(feature.properties['Join_Erups']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gelom'] !== null ? autolinker.link(String(feature.properties['Join_Gelom']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gel_1'] !== null ? autolinker.link(String(feature.properties['Join_Gel_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gempa'] !== null ? autolinker.link(String(feature.properties['Join_Gempa']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kebak'] !== null ? autolinker.link(String(feature.properties['Join_Kebak']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Keker'] !== null ? autolinker.link(String(feature.properties['Join_Keker']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Tanah'] !== null ? autolinker.link(String(feature.properties['Join_Tanah']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Polygon_line_4_0() {
+            return {
+                pane: 'pane_Polygon_line_4',
+                opacity: 1,
+                color: 'rgba(219,30,42,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Polygon_line_4');
+        map.getPane('pane_Polygon_line_4').style.zIndex = 404;
+        map.getPane('pane_Polygon_line_4').style['mix-blend-mode'] = 'normal';
+        var layer_Polygon_line_4 = new L.geoJson(json_Polygon_line_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Polygon_line_4',
+            layerName: 'layer_Polygon_line_4',
+            pane: 'pane_Polygon_line_4',
+            onEachFeature: pop_Polygon_line_4,
+            style: style_Polygon_line_4_0,
+        });
+        bounds_group.addLayer(layer_Polygon_line_4);
+        map.addLayer(layer_Polygon_line_4);
+        function pop_Exploded_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBJECTID'] !== null ? autolinker.link(String(feature.properties['OBJECTID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FCODE'] !== null ? autolinker.link(String(feature.properties['FCODE']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['METADATA'] !== null ? autolinker.link(String(feature.properties['METADATA']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPADM'] !== null ? autolinker.link(String(feature.properties['TIPADM']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKD'] !== null ? autolinker.link(String(feature.properties['WADMKD']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['WADMPR'] !== null ? autolinker.link(String(feature.properties['WADMPR']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LUAS'] !== null ? autolinker.link(String(feature.properties['LUAS']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Field'] !== null ? autolinker.link(String(feature.properties['Field']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_No'] !== null ? autolinker.link(String(feature.properties['Join_No']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Luas'] !== null ? autolinker.link(String(feature.properties['Join_Luas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Pendu'] !== null ? autolinker.link(String(feature.properties['Join_Pendu']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kepad'] !== null ? autolinker.link(String(feature.properties['Join_Kepad']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Banji'] !== null ? autolinker.link(String(feature.properties['Join_Banji']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Cuaca'] !== null ? autolinker.link(String(feature.properties['Join_Cuaca']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Erups'] !== null ? autolinker.link(String(feature.properties['Join_Erups']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gelom'] !== null ? autolinker.link(String(feature.properties['Join_Gelom']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gel_1'] !== null ? autolinker.link(String(feature.properties['Join_Gel_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Gempa'] !== null ? autolinker.link(String(feature.properties['Join_Gempa']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Kebak'] !== null ? autolinker.link(String(feature.properties['Join_Kebak']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Keker'] !== null ? autolinker.link(String(feature.properties['Join_Keker']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Join_Tanah'] !== null ? autolinker.link(String(feature.properties['Join_Tanah']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Exploded_5_0() {
+            return {
+                pane: 'pane_Exploded_5',
+                opacity: 1,
+                color: 'rgba(232,113,141,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Exploded_5');
+        map.getPane('pane_Exploded_5').style.zIndex = 405;
+        map.getPane('pane_Exploded_5').style['mix-blend-mode'] = 'normal';
+        var layer_Exploded_5 = new L.geoJson(json_Exploded_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Exploded_5',
+            layerName: 'layer_Exploded_5',
+            pane: 'pane_Exploded_5',
+            onEachFeature: pop_Exploded_5,
+            style: style_Exploded_5_0,
+        });
+        bounds_group.addLayer(layer_Exploded_5);
+        map.addLayer(layer_Exploded_5);
+        const url = {"Nominatim OSM": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        "France BAN": "https://api-adresse.data.gouv.fr/search/?"}
+        var photonControl = L.control.photon({
+            url: url["Nominatim OSM"],
+            feedbackLabel: '',
+            position: 'topleft',
+            includePosition: true,
+            initial: true,
+            // resultsHandler: myHandler,
+        }).addTo(map);
+        photonControl._container.childNodes[0].style.borderRadius="10px"
+        // Create a variable to store the geoJSON data
+        var x = null;
+        // Create a variable to store the marker
+        var marker = null;
+        // Add an event listener to the Photon control to create a marker from the returned geoJSON data
+        var z = null;
+        photonControl.on('selected', function(e) {
+            console.log(photonControl.search.resultsContainer);
+            if (x != null) {
+                map.removeLayer(obj3.marker);
+                map.removeLayer(x);
+            }
+            obj2.gcd = e.choice;
+            x = L.geoJSON(obj2.gcd).addTo(map);
+            var label = typeof obj2.gcd.properties.label === 'undefined' ? obj2.gcd.properties.display_name : obj2.gcd.properties.label;
+            obj3.marker = L.marker(x.getLayers()[0].getLatLng()).bindPopup(label).addTo(map);
+            map.setView(x.getLayers()[0].getLatLng(), 17);
+            z = typeof e.choice.properties.label === 'undefined'? e.choice.properties.display_name : e.choice.properties.label;
+            console.log(e);
+            e.target.input.value = z;
+        });
+        var search = document.getElementsByClassName("leaflet-photon leaflet-control")[0];
+        search.classList.add("leaflet-control-search")
+        search.style.display = "flex";
+        search.style.backgroundColor="rgba(255,255,255,0.5)" 
+
+        // Create the new button element
+        var button = document.createElement("div");
+        button.id = "gcd-button-control";
+        button.className = "gcd-gl-btn fa fa-search search-button";
+
+        // Insert the button at the beginning of the search control
+        search.insertBefore(button, search.firstChild);
+        last = search.lastChild;
+        last.style.display = "none";
+        button.addEventListener("click", function (e) {
+            if (last.style.display === "none") {
+                last.style.display = "block";
+            } else {
+                last.style.display = "none";
+            }
+        });
         var overlaysTree = [
-            {label: 'Kepadatan Penduduk Kota Yogyakarta<br /><table><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_1_Rendah8212perkm20.png" /></td><td>Rendah (8.2 - 12 per km2)</td></tr><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_1_Sedang12139perkm21.png" /></td><td>Sedang (12 - 13.9 per km2)</td></tr><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_1_Rendah139184perkm22.png" /></td><td>Rendah (13.9 - 18.4 per km2)</td></tr></table>', layer: layer_KepadatanPendudukKotaYogyakarta_1},
-            {label: "OSM Standard", layer: layer_OSMStandard_0},]
+            {label: '<img src="legend/Exploded_5.png" /> Exploded', layer: layer_Exploded_5},
+            {label: '<img src="legend/Polygon_line_4.png" /> Polygon_line', layer: layer_Polygon_line_4},
+            {label: '<img src="legend/polygon_to_line_3.png" /> polygon_to_line', layer: layer_polygon_to_line_3},
+            {label: 'Kepadatan Penduduk Kota Yogyakarta<br /><table><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_2_Rendah8212perkm20.png" /></td><td>Rendah (8.2 - 12 per km2)</td></tr><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_2_Sedang12139perkm21.png" /></td><td>Sedang (12 - 13.9 per km2)</td></tr><tr><td style="text-align: center;"><img src="legend/KepadatanPendudukKotaYogyakarta_2_Rendah139184perkm22.png" /></td><td>Rendah (13.9 - 18.4 per km2)</td></tr></table>', layer: layer_KepadatanPendudukKotaYogyakarta_2},
+            {label: "OSM Standard", layer: layer_OSMStandard_1, radioGroup: 'bm' },
+            {label: '<img src="legend/gabriel_centroids_0.png" /> gabriel_centroids', layer: layer_gabriel_centroids_0},]
         var lay = L.control.layers.tree(null, overlaysTree,{
             //namedToggle: true,
             //selectorBack: false,
@@ -249,6 +811,29 @@
         });
         lay.addTo(map);
         setBounds();
+        var i = 0;
+        layer_gabriel_centroids_0.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_gabriel_centroids_0_eval_expression(context) !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Open Sans\', sans-serif;">' + exp_label_gabriel_centroids_0_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_gabriel_centroids_0'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_gabriel_centroids_0]);
+        map.on("zoomend", function(){
+            resetLabels([layer_gabriel_centroids_0]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_gabriel_centroids_0]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_gabriel_centroids_0]);
+        });
         </script>        
     </body>
 </html>
